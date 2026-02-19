@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КЛІККЕР КНОПКИ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --panel: #12121a;
+  --border: #1e1e2e;
+  --accent: #ff2244;
+  --accent2: #ff6600;
+  --gold: #ffd700;
+  --crystal: #00e5ff;
+  --text: #e0e0ff;
+  --muted: #666688;
+  --green: #00ff88;
+  --purple: #aa44ff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: radial-gradient(ellipse at 20% 50%, #1a0020 0%, transparent 60%),
+                    radial-gradient(ellipse at 80% 20%, #001a20 0%, transparent 50%);
+}
+
+h1, h2, .title { font-family: 'Orbitron', sans-serif; }
+
+/* LAYOUT */
+#app {
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  grid-template-rows: 60px 1fr;
+  height: 100vh;
+  gap: 0;
+}
+
+/* HEADER */
+#header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: #0d0d15;
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+
+#header h1 {
+  font-size: 18px;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent);
+  letter-spacing: 3px;
+}
+
+#header-stats {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.hstat {
+  text-align: center;
+}
+.hstat .val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  color: var(--gold);
+}
+.hstat .lbl {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* LEFT PANEL - UPGRADES */
+#left-panel {
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* CENTER */
+#center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+#center::before {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,34,68,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* PROGRESS BAR */
+#progress-wrap {
+  width: 340px;
+}
+#progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+#progress-bar-bg {
+  height: 8px;
+  background: #1a1a2a;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+#progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  transition: width 0.3s;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+/* THE BUTTON */
+#btn-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#main-btn {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fff;
+  position: relative;
+  transition: transform 0.08s, box-shadow 0.2s;
+  user-select: none;
+  outline: none;
+  background: radial-gradient(circle at 35% 35%, #ff4466, #aa0022);
+  box-shadow: 0 0 30px rgba(255,34,68,0.5), 0 0 80px rgba(255,34,68,0.2), inset 0 2px 6px rgba(255,150,150,0.3);
+}
+
+#main-btn::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, rgba(255,255,255,0.15), transparent 60%);
+  pointer-events: none;
+}
+
+#main-btn:active {
+  transform: scale(0.92);
+}
+
+#main-btn.skin-gold {
+  background: radial-gradient(circle at 35% 35%, #ffe066, #b8860b);
+  box-shadow: 0 0 30px rgba(255,215,0,0.6), 0 0 80px rgba(255,215,0,0.2), inset 0 2px 6px rgba(255,255,200,0.3);
+}
+#main-btn.skin-cyber {
+  background: radial-gradient(circle at 35% 35%, #44ffee, #006688);
+  box-shadow: 0 0 30px rgba(0,229,255,0.6), 0 0 80px rgba(0,229,255,0.2), inset 0 2px 6px rgba(200,255,255,0.3);
+}
+#main-btn.skin-void {
+  background: radial-gradient(circle at 35% 35%, #aa44ff, #220044);
+  box-shadow: 0 0 30px rgba(170,68,255,0.6), 0 0 80px rgba(170,68,255,0.2), inset 0 2px 6px rgba(200,150,255,0.3);
+}
+#main-btn.skin-inferno {
+  background: radial-gradient(circle at 35% 35%, #ff8800, #550000);
+  box-shadow: 0 0 40px rgba(255,136,0,0.7), 0 0 100px rgba(255,50,0,0.3), inset 0 2px 6px rgba(255,200,100,0.3);
+  animation: inferno-pulse 1.5s infinite;
+}
+@keyframes inferno-pulse {
+  0%,100% { box-shadow: 0 0 40px rgba(255,136,0,0.7), 0 0 100px rgba(255,50,0,0.3); }
+  50% { box-shadow: 0 0 60px rgba(255,80,0,0.9), 0 0 140px rgba(255,50,0,0.5); }
+}
+#main-btn.skin-galaxy {
+  background: radial-gradient(circle at 35% 35%, #ff44aa, #002255);
+  box-shadow: 0 0 40px rgba(255,68,170,0.6), 0 0 100px rgba(0,100,255,0.3), inset 0 2px 6px rgba(255,200,255,0.3);
+  animation: galaxy-spin 3s linear infinite;
+}
+@keyframes galaxy-spin {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* Click particles */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 8px var(--gold);
+  animation: particle-float 0.8s ease-out forwards;
+  z-index: 1000;
+}
+@keyframes particle-float {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
+}
+
+/* RIGHT PANEL */
+#right-panel {
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* PANEL SECTIONS */
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+/* UPGRADE CARDS */
+.upgrade-card {
+  background: #0f0f1a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.upgrade-card:hover:not(.locked) {
+  border-color: var(--accent);
+  background: #1a0a0f;
+}
+.upgrade-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.upgrade-card .uc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.upgrade-card .uc-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+.upgrade-card .uc-cost {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  color: var(--gold);
+}
+.upgrade-card .uc-cost.crystal { color: var(--crystal); }
+.upgrade-card .uc-desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+.upgrade-card .uc-level {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-family: 'Orbitron', sans-serif;
+  padding: 2px 6px;
+  border-radius: 0 8px 0 8px;
+}
+.upgrade-card .uc-level.maxed { background: var(--gold); color: #000; }
+.upgrade-card .uc-bar {
+  height: 3px;
+  background: #1a1a2a;
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.upgrade-card .uc-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.tab-btn {
+  flex: 1;
+  background: #0f0f1a;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 4px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.tab-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #1a0a0f;
+}
+
+/* CRYSTALS DISPLAY */
+#crystal-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  color: var(--crystal);
+  text-shadow: 0 0 10px var(--crystal);
+}
+.crystal-icon { font-size: 18px; }
+
+/* SHOP ITEMS */
+.shop-item {
+  background: #0f0f1a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.shop-item:hover:not(.locked) {
+  border-color: var(--crystal);
+  background: #001a1f;
+}
+.shop-item.locked { opacity: 0.5; cursor: not-allowed; }
+.shop-item .si-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.shop-item .si-name { font-weight: 700; font-size: 14px; }
+.shop-item .si-cost { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--crystal); }
+.shop-item .si-desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.shop-item .si-badge {
+  position: absolute;
+  top: -4px;
+  right: 8px;
+  font-size: 9px;
+  font-family: 'Orbitron', sans-serif;
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+}
+.badge-rare { background: var(--purple); }
+.badge-epic { background: #ff6600; }
+
+/* SKINS */
+.skin-item {
+  background: #0f0f1a;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.skin-item:hover:not(.locked) { border-color: var(--gold); }
+.skin-item.equipped { border-color: var(--gold); background: #1a1500; }
+.skin-item.locked { opacity: 0.5; cursor: not-allowed; }
+.skin-item .skin-preview {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+}
+.skin-item .skin-name { font-weight: 700; font-size: 12px; }
+.skin-item .skin-cost { font-size: 11px; color: var(--crystal); font-family: 'Orbitron', sans-serif; }
+.skin-item .skin-bonus { font-size: 10px; color: var(--green); margin-top: 2px; }
+.skin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+/* BOX */
+.box-item {
+  background: linear-gradient(135deg, #1a0a1a, #0a0a1a);
+  border: 1px solid var(--purple);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.box-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(170,68,255,0.05), transparent);
+}
+.box-item:hover:not(.locked) {
+  border-color: #cc88ff;
+  box-shadow: 0 0 20px rgba(170,68,255,0.3);
+}
+.box-item .box-emoji { font-size: 32px; margin-bottom: 6px; }
+.box-item .box-name { font-weight: 700; font-size: 14px; color: var(--purple); }
+.box-item .box-cost { font-size: 11px; color: var(--crystal); font-family: 'Orbitron', sans-serif; }
+.box-item .box-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* MODAL */
+#modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+#modal-overlay.show { display: flex; }
+#modal {
+  background: #12121a;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: modal-pop 0.2s ease-out;
+}
+@keyframes modal-pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+#modal h2 { font-family: 'Orbitron', sans-serif; font-size: 20px; margin-bottom: 12px; color: var(--gold); }
+#modal .loot-list {
+  text-align: left;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#modal .loot-item {
+  padding: 8px 12px;
+  background: #0f0f1a;
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+  font-size: 14px;
+}
+#modal .loot-item.rare { border-left-color: var(--purple); color: #cc88ff; }
+#modal .loot-item.epic { border-left-color: var(--gold); color: var(--gold); }
+#modal button {
+  margin-top: 12px;
+  padding: 10px 28px;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+#modal button:hover { opacity: 0.85; }
+
+/* WIN SCREEN */
+#win-screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+#win-screen.show { display: flex; }
+#win-screen h1 { font-size: 48px; color: var(--gold); text-shadow: 0 0 40px var(--gold); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+#win-screen p { font-size: 20px; color: var(--text); }
+
+/* NOTIFICATION */
+#notif {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a2a;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+#notif.show { opacity: 1; }
+
+/* Artifact buff indicator */
+#artifact-indicator {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  color: var(--accent2);
+  opacity: 0;
+  transition: opacity 0.3s;
+  text-shadow: 0 0 10px var(--accent2);
+  z-index: 100;
+}
+#artifact-indicator.show { opacity: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* PRESTIGE */
+#prestige-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #440088, #880044);
+  border: 1px solid var(--purple);
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+#prestige-btn:hover { box-shadow: 0 0 15px rgba(170,68,255,0.4); }
+
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- HEADER -->
+  <header id="header">
+    <h1>⬡ КЛІКЕР</h1>
+    <div id="header-stats">
+      <div class="hstat">
+        <div class="val" id="hstat-total">0</div>
+        <div class="lbl">ВСЬОГО КЛІКІВ</div>
+      </div>
+      <div class="hstat">
+        <div class="val" id="hstat-cps">0</div>
+        <div class="lbl">КЛІКІВ/СЕК</div>
+      </div>
+      <div class="hstat">
+        <div class="val" id="hstat-cpc">1</div>
+        <div class="lbl">КЛІКІВ/НАТИСКАННЯ</div>
+      </div>
+      <div id="crystal-count">
+        <span class="crystal-icon">💎</span>
+        <span id="hstat-crystals">0</span>
+      </div>
+      <button id="prestige-btn" onclick="prestige()">⟳ ПРЕСТИЖ</button>
+    </div>
+  </header>
+
+  <!-- LEFT: UPGRADES -->
+  <div id="left-panel">
+    <div class="section-title">ПРОКАЧУВАННЯ КНОПКИ</div>
+    <div id="buff-card" class="upgrade-card" onclick="buyBuff()">
+      <div class="uc-level" id="buff-level-badge">0</div>
+      <div class="uc-header">
+        <span class="uc-name">⚡ БАФФ КЛІКУ</span>
+        <span class="uc-cost" id="buff-cost">100</span>
+      </div>
+      <div class="uc-desc">+1 до сили кліку за рівень</div>
+      <div class="uc-bar"><div class="uc-bar-fill" id="buff-bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:8px">ФАБРИКИ</div>
+
+    <div id="f1-card" class="upgrade-card" onclick="buyFactory(1)">
+      <div class="uc-level" id="f1-level-badge">0</div>
+      <div class="uc-header">
+        <span class="uc-name">🏭 Фабрика I</span>
+        <span class="uc-cost" id="f1-cost">50</span>
+      </div>
+      <div class="uc-desc" id="f1-desc">+0.5 кліків/сек</div>
+      <div class="uc-bar"><div class="uc-bar-fill" id="f1-bar" style="width:0%"></div></div>
+    </div>
+
+    <div id="f2-card" class="upgrade-card" onclick="buyFactory(2)">
+      <div class="uc-level" id="f2-level-badge">0</div>
+      <div class="uc-header">
+        <span class="uc-name">⚙️ Фабрика II</span>
+        <span class="uc-cost" id="f2-cost">300</span>
+      </div>
+      <div class="uc-desc" id="f2-desc">+2 кліків/сек</div>
+      <div class="uc-bar"><div class="uc-bar-fill" id="f2-bar" style="width:0%"></div></div>
+    </div>
+
+    <div id="f3-card" class="upgrade-card" onclick="buyFactory(3)">
+      <div class="uc-level" id="f3-level-badge">0</div>
+      <div class="uc-header">
+        <span class="uc-name">🔩 Фабрика III</span>
+        <span class="uc-cost" id="f3-cost">2000</span>
+      </div>
+      <div class="uc-desc" id="f3-desc">+8 кліків/сек</div>
+      <div class="uc-bar"><div class="uc-bar-fill" id="f3-bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:8px">СУПЕР ФАБРИКА 💎</div>
+    <div id="sf-card" class="upgrade-card" onclick="buySuperFactory()">
+      <div class="uc-level" id="sf-level-badge">0</div>
+      <div class="uc-header">
+        <span class="uc-name">🌟 Супер Фабрика</span>
+        <span class="uc-cost" id="sf-cost">1300 кліків</span>
+      </div>
+      <div class="uc-desc">Виробляє кристали 💎 (0.1/сек×рівень)</div>
+      <div class="uc-bar"><div class="uc-bar-fill" id="sf-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div id="center">
+    <div id="progress-wrap">
+      <div id="progress-label">
+        <span>ПРОГРЕС ДО ПЕРЕМОГИ</span>
+        <span id="progress-text">0 / 13,131,313</span>
+      </div>
+      <div id="progress-bar-bg">
+        <div id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div id="btn-container">
+      <button id="main-btn" onclick="handleClick(event)">
+        КЛІК
+      </button>
+    </div>
+
+    <div style="text-align:center; color: var(--muted); font-size:12px;">
+      Натискай кнопку! Кожне натискання = <span id="cpc-display" style="color:var(--gold)">1</span> кліків
+    </div>
+  </div>
+
+  <!-- RIGHT: SHOP -->
+  <div id="right-panel">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('shop')">МАГАЗИН</button>
+      <button class="tab-btn" onclick="switchTab('skins')">СКІНИ</button>
+    </div>
+
+    <!-- SHOP TAB -->
+    <div id="tab-shop">
+      <div class="section-title">ЗА КРИСТАЛИ 💎</div>
+
+      <div class="shop-item" onclick="buyCrystalUpgrade('cps_boost')">
+        <div class="si-header">
+          <span class="si-name">⚡ Прискорення</span>
+          <span class="si-cost" id="cps-boost-cost">25 💎</span>
+        </div>
+        <div class="si-desc">+1 до кліків/сек за кристал (×рівень)</div>
+      </div>
+
+      <div class="shop-item" onclick="buyCrystalUpgrade('artifact')">
+        <span class="si-badge badge-rare">РІДКО</span>
+        <div class="si-header">
+          <span class="si-name">🔮 Артефакт</span>
+          <span class="si-cost">50 💎</span>
+        </div>
+        <div class="si-desc">10% шанс: 2–13 кліків за 1 натискання</div>
+      </div>
+
+      <div class="section-title" style="margin-top:8px">БОКСИ 📦</div>
+
+      <div class="box-item" onclick="openBox('normal')">
+        <div class="box-emoji">📦</div>
+        <div class="box-name">ЗВИЧАЙНИЙ БОКС</div>
+        <div class="box-cost">77 💎</div>
+        <div class="box-desc">7–13 предметів всередині</div>
+      </div>
+
+      <div style="margin-top:6px"></div>
+
+      <div class="box-item" onclick="openBox('mega')">
+        <div class="box-emoji">🎁</div>
+        <div class="box-name">МЕГА БОКС</div>
+        <div class="box-cost">150 💎</div>
+        <div class="box-desc">10–13 предметів, вища шанс рідких</div>
+      </div>
+    </div>
+
+    <!-- SKINS TAB -->
+    <div id="tab-skins" style="display:none">
+      <div class="section-title">СКІНИ КНОПКИ</div>
+      <div class="skin-grid" id="skin-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" onclick="closeModal()">
+  <div id="modal" onclick="event.stopPropagation()">
+    <h2 id="modal-title">📦 БОКС ВІДКРИТО!</h2>
+    <div class="loot-list" id="loot-list"></div>
+    <button onclick="closeModal()">ЗАКРИТИ</button>
+  </div>
+</div>
+
+<!-- WIN SCREEN -->
+<div id="win-screen">
+  <h1>🏆 ПЕРЕМОГА!</h1>
+  <p>Ти зібрав 13,131,313 кліків!</p>
+  <p style="font-size:14px;color:var(--muted)">Ти пройшов гру. Легенда.</p>
+</div>
+
+<!-- NOTIF -->
+<div id="notif" id="notif"></div>
+<div id="artifact-indicator">✨ АРТЕФАКТ!</div>
+
+<script>
+// ============ STATE ============
+const G = {
+  clicks: 0,
+  totalClicks: 0,
+  crystals: 0,
+  totalCrystals: 0,
+
+  buffLevel: 0,
+  buffMax: 130,
+  buffBaseCost: 100,
+
+  f1Level: 0, f2Level: 0, f3Level: 0,
+  fMax: 77,
+  f1Base: 50, f2Base: 300, f3Base: 2000,
+
+  sfLevel: 0,
+  sfMax: 13,
+  sfBought: false,
+
+  cpsBoostLevel: 0,
+  hasArtifact: false,
+  artifactCount: 0,
+
+  equippedSkin: 'default',
+  unlockedSkins: ['default'],
+
+  won: false,
+  prestigeCount: 0,
+};
+
+const SKINS = [
+  { id: 'default', name: '🔴 Звичайна', cost: 0, cssClass: '', bonus: 'Базова', bonusMult: 1, desc: 'Базова червона', boxOnly: false },
+  { id: 'gold', name: '🟡 Золота', cost: 30, cssClass: 'skin-gold', bonus: '+10% кліків', bonusMult: 1.1, desc: 'Золотий блиск', boxOnly: false },
+  { id: 'cyber', name: '🔵 Кіберпанк', cost: 60, cssClass: 'skin-cyber', bonus: '+20% кліків', bonusMult: 1.2, desc: 'Неоновий стиль', boxOnly: false },
+  { id: 'void', name: '🟣 Пустота', cost: 80, cssClass: 'skin-void', bonus: '+25% кліків', bonusMult: 1.25, desc: 'Темний артефакт', boxOnly: false },
+  { id: 'inferno', name: '🔥 Інферно', cost: 0, cssClass: 'skin-inferno', bonus: '+50% кліків', bonusMult: 1.5, desc: 'ТІЛЬКИ З БОКСУ', boxOnly: true },
+  { id: 'galaxy', name: '🌌 Галактика', cost: 0, cssClass: 'skin-galaxy', bonus: '+100% кліків', bonusMult: 2.0, desc: 'ТІЛЬКИ З БОКСУ', boxOnly: true },
+];
+
+// ============ HELPERS ============
+function fmt(n) {
+  n = Math.floor(n);
+  if (n >= 1e9) return (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function notify(msg, color) {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.style.borderColor = color || 'var(--accent)';
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function getCurrentSkin() {
+  return SKINS.find(s => s.id === G.equippedSkin) || SKINS[0];
+}
+
+// ============ CLICK ============
+function handleClick(e) {
+  if (G.won) return;
+  
+  let baseClick = 1 + G.buffLevel;
+  let skinMult = getCurrentSkin().bonusMult;
+  let clicks = baseClick * skinMult;
+
+  // Artifact chance
+  let artifactUsed = false;
+  if (G.hasArtifact && Math.random() < 0.10) {
+    const bonus = Math.floor(Math.random() * 12) + 2; // 2-13
+    clicks += bonus * skinMult;
+    artifactUsed = true;
+    G.artifactCount++;
+  }
+
+  clicks = Math.round(clicks);
+  G.clicks += clicks;
+  G.totalClicks += clicks;
+
+  if (artifactUsed) {
+    const ind = document.getElementById('artifact-indicator');
+    ind.classList.add('show');
+    clearTimeout(ind._t);
+    ind._t = setTimeout(() => ind.classList.remove('show'), 600);
+  }
+
+  // Particle
+  spawnParticle(e, '+' + fmt(clicks));
+
+  updateUI();
+  checkWin();
+}
+
+function spawnParticle(e, text) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.textContent = text;
+  const x = e ? e.clientX : window.innerWidth/2;
+  const y = e ? e.clientY : window.innerHeight/2;
+  p.style.left = (x - 15 + Math.random()*30) + 'px';
+  p.style.top = (y - 10) + 'px';
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 800);
+}
+
+// ============ BUY BUFF ============
+function buffCost(level) {
+  return Math.floor(G.buffBaseCost * Math.pow(1.3, level));
+}
+
+function buyBuff() {
+  if (G.buffLevel >= G.buffMax) { notify('Максимальний рівень!'); return; }
+  const cost = buffCost(G.buffLevel);
+  if (G.clicks < cost) { notify('Недостатньо кліків!'); return; }
+  G.clicks -= cost;
+  G.buffLevel++;
+  notify(`⚡ Бафф рівень ${G.buffLevel}!`, 'var(--accent)');
+  updateUI();
+}
+
+// ============ FACTORIES ============
+function factoryCost(base, level) {
+  return Math.floor(base * Math.pow(1.25, level));
+}
+
+function getCPS() {
+  let cps = 0;
+  cps += G.f1Level * 0.5;
+  cps += G.f2Level * 2;
+  cps += G.f3Level * 8;
+  cps += G.cpsBoostLevel * 1;
+  return cps;
+}
+
+function getCPC() {
+  let base = 1 + G.buffLevel;
+  let skinMult = getCurrentSkin().bonusMult;
+  return Math.round(base * skinMult);
+}
+
+function buyFactory(n) {
+  const keys = {1: {base: G.f1Base, lv: 'f1Level', max: G.fMax}, 2: {base: G.f2Base, lv: 'f2Level', max: G.fMax}, 3: {base: G.f3Base, lv: 'f3Level', max: G.fMax}};
+  const k = keys[n];
+  const level = G[k.lv];
+  if (level >= k.max) { notify('Максимальний рівень!'); return; }
+  const cost = factoryCost(k.base, level);
+  if (G.clicks < cost) { notify('Недостатньо кліків!'); return; }
+  G.clicks -= cost;
+  G[k.lv]++;
+  notify(`🏭 Фабрика ${n} — рівень ${G[k.lv]}!`);
+  updateUI();
+}
+
+// ============ SUPER FACTORY ============
+function sfCost() {
+  if (!G.sfBought) return 1300;
+  return Math.floor(5000 * Math.pow(2, G.sfLevel));
+}
+
+function buySuperFactory() {
+  const cost = sfCost();
+  if (G.sfLevel >= G.sfMax) { notify('Максимальний рівень!'); return; }
+  if (G.clicks < cost) { notify('Недостатньо кліків!'); return; }
+  G.clicks -= cost;
+  if (!G.sfBought) G.sfBought = true;
+  G.sfLevel++;
+  notify(`🌟 Супер Фабрика — рівень ${G.sfLevel}!`, 'var(--crystal)');
+  updateUI();
+}
+
+// ============ CRYSTAL UPGRADES ============
+function buyCrystalUpgrade(type) {
+  if (type === 'cps_boost') {
+    const cost = 25 + G.cpsBoostLevel * 15;
+    if (G.crystals < cost) { notify('Мало кристалів!', 'var(--crystal)'); return; }
+    G.crystals -= cost;
+    G.cpsBoostLevel++;
+    notify(`⚡ Прискорення рівень ${G.cpsBoostLevel}!`, 'var(--green)');
+  } else if (type === 'artifact') {
+    const cost = 50;
+    if (G.crystals < cost) { notify('Мало кристалів!', 'var(--crystal)'); return; }
+    if (G.hasArtifact) { notify('Артефакт вже є!'); return; }
+    G.crystals -= cost;
+    G.hasArtifact = true;
+    notify('🔮 Артефакт активовано!', 'var(--purple)');
+  }
+  updateUI();
+}
+
+// ============ BOXES ============
+const BOX_LOOT_POOL = [
+  { name: '💎 Кристали (10)', type: 'crystals', value: 10, rarity: 'common' },
+  { name: '💎 Кристали (25)', type: 'crystals', value: 25, rarity: 'common' },
+  { name: '💎 Кристали (50)', type: 'crystals', value: 50, rarity: 'uncommon' },
+  { name: '🖱️ Кліки (130)', type: 'clicks', value: 130, rarity: 'common' },
+  { name: '🖱️ Кліки (500)', type: 'clicks', value: 500, rarity: 'uncommon' },
+  { name: '🖱️ Кліки (1300)', type: 'clicks', value: 1300, rarity: 'rare' },
+  { name: '🔮 Артефакт', type: 'artifact', rarity: 'uncommon' },
+  { name: '🔥 Скін: Інферно', type: 'skin', skinId: 'inferno', rarity: 'rare' },
+  { name: '🌌 Скін: Галактика', type: 'skin', skinId: 'galaxy', rarity: 'epic' },
+];
+
+function rollLoot(isMega) {
+  const count = isMega ? (Math.floor(Math.random()*4)+10) : (Math.floor(Math.random()*7)+7);
+  const items = [];
+  for (let i = 0; i < count; i++) {
+    let r = Math.random();
+    let pool;
+    if (isMega) {
+      if (r < 0.05) pool = BOX_LOOT_POOL.filter(x => x.rarity === 'epic');
+      else if (r < 0.2) pool = BOX_LOOT_POOL.filter(x => x.rarity === 'rare');
+      else if (r < 0.5) pool = BOX_LOOT_POOL.filter(x => x.rarity === 'uncommon');
+      else pool = BOX_LOOT_POOL.filter(x => x.rarity === 'common');
+    } else {
+      if (r < 0.02) pool = BOX_LOOT_POOL.filter(x => x.rarity === 'epic');
+      else if (r < 0.1) pool = BOX_LOOT_POOL.filter(x => x.rarity === 'rare');
+      else if (r < 0.35) pool = BOX_LOOT_POOL.filter(x => x.rarity === 'uncommon');
+      else pool = BOX_LOOT_POOL.filter(x => x.rarity === 'common');
+    }
+    if (pool.length === 0) pool = BOX_LOOT_POOL.filter(x => x.rarity === 'common');
+    items.push(pool[Math.floor(Math.random() * pool.length)]);
+  }
+  return items;
+}
+
+function openBox(type) {
+  const cost = type === 'mega' ? 150 : 77;
+  if (G.crystals < cost) { notify('Мало кристалів!', 'var(--crystal)'); return; }
+  G.crystals -= cost;
+
+  const loot = rollLoot(type === 'mega');
+  const lootEl = document.getElementById('loot-list');
+  lootEl.innerHTML = '';
+  document.getElementById('modal-title').textContent = type === 'mega' ? '🎁 МЕГА БОКС ВІДКРИТО!' : '📦 БОКС ВІДКРИТО!';
+
+  loot.forEach(item => {
+    // Apply loot
+    if (item.type === 'crystals') G.crystals += item.value;
+    else if (item.type === 'clicks') { G.clicks += item.value; G.totalClicks += item.value; }
+    else if (item.type === 'artifact') G.hasArtifact = true;
+    else if (item.type === 'skin') {
+      if (!G.unlockedSkins.includes(item.skinId)) G.unlockedSkins.push(item.skinId);
+    }
+
+    const div = document.createElement('div');
+    div.className = 'loot-item' + (item.rarity === 'epic' ? ' epic' : item.rarity === 'rare' ? ' rare' : '');
+    div.textContent = item.name;
+    lootEl.appendChild(div);
+  });
+
+  document.getElementById('modal-overlay').classList.add('show');
+  updateUI();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+// ============ SKINS ============
+function buySkin(skinId) {
+  const skin = SKINS.find(s => s.id === skinId);
+  if (!skin) return;
+  if (G.unlockedSkins.includes(skinId)) {
+    G.equippedSkin = skinId;
+    notify(`${skin.name} скін надягнуто!`, 'var(--gold)');
+    updateUI();
+    return;
+  }
+  if (skin.boxOnly) { notify('Цей скін тільки з боксу!'); return; }
+  if (G.crystals < skin.cost) { notify('Мало кристалів!', 'var(--crystal)'); return; }
+  G.crystals -= skin.cost;
+  G.unlockedSkins.push(skinId);
+  G.equippedSkin = skinId;
+  notify(`${skin.name} скін куплено!`, 'var(--gold)');
+  updateUI();
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-shop').style.display = tab === 'shop' ? '' : 'none';
+  document.getElementById('tab-skins').style.display = tab === 'skins' ? '' : 'none';
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && tab==='shop') || (i===1 && tab==='skins'));
+  });
+}
+
+function renderSkins() {
+  const grid = document.getElementById('skin-grid');
+  grid.innerHTML = '';
+  SKINS.forEach(skin => {
+    const div = document.createElement('div');
+    const owned = G.unlockedSkins.includes(skin.id);
+    const equipped = G.equippedSkin === skin.id;
+    div.className = 'skin-item' + (equipped ? ' equipped' : '') + (skin.boxOnly && !owned ? ' locked' : '');
+    div.onclick = () => buySkin(skin.id);
+
+    const preview = document.createElement('div');
+    preview.className = 'skin-preview ' + skin.cssClass;
+    preview.style.background = !skin.cssClass
+      ? 'radial-gradient(circle at 35% 35%, #ff4466, #aa0022)'
+      : '';
+
+    div.innerHTML = `
+      <div class="skin-name">${skin.name}</div>
+      <div class="skin-bonus">${skin.bonus}</div>
+      <div class="skin-cost">${owned ? (equipped ? '✓ НАДЯГНУТО' : 'НАТИСНИ') : (skin.boxOnly ? '📦 БОК' : skin.cost + ' 💎')}</div>
+    `;
+    div.prepend(preview);
+    grid.appendChild(div);
+  });
+}
+
+// ============ PRESTIGE ============
+function prestige() {
+  if (!confirm('Престиж скине прогрес і кліки, але збільшить потужність назавжди!')) return;
+  G.prestigeCount++;
+  G.clicks = 0;
+  G.totalClicks = 0;
+  G.buffLevel = 0;
+  G.f1Level = 0; G.f2Level = 0; G.f3Level = 0;
+  G.sfLevel = 0; G.sfBought = false;
+  G.cpsBoostLevel = 0;
+  notify(`⟳ Престиж ${G.prestigeCount}! +${G.prestigeCount*10}% до всіх кліків назавжди`, 'var(--purple)');
+  updateUI();
+}
+
+// ============ WIN ============
+function checkWin() {
+  if (!G.won && G.totalClicks >= 13131313) {
+    G.won = true;
+    document.getElementById('win-screen').classList.add('show');
+  }
+}
+
+// ============ GAME LOOP ============
+let lastTick = Date.now();
+function gameLoop() {
+  const now = Date.now();
+  const dt = (now - lastTick) / 1000;
+  lastTick = now;
+
+  if (!G.won) {
+    const cps = getCPS();
+    const gained = cps * dt * getCurrentSkin().bonusMult * (1 + G.prestigeCount * 0.1);
+    G.clicks += gained;
+    G.totalClicks += gained;
+
+    // Crystals from super factory
+    if (G.sfBought && G.sfLevel > 0) {
+      G.crystals += G.sfLevel * 0.1 * dt;
+    }
+  }
+
+  updateUI();
+}
+
+// ============ UI ============
+function updateUI() {
+  // Stats
+  document.getElementById('hstat-total').textContent = fmt(G.clicks);
+  document.getElementById('hstat-cps').textContent = fmt(getCPS() * getCurrentSkin().bonusMult * (1 + G.prestigeCount * 0.1));
+  document.getElementById('hstat-cpc').textContent = fmt(getCPC());
+  document.getElementById('hstat-crystals').textContent = fmt(G.crystals);
+  document.getElementById('cpc-display').textContent = fmt(getCPC());
+
+  // Progress
+  const pct = Math.min(100, (G.totalClicks / 13131313) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = fmt(G.totalClicks) + ' / 13,131,313';
+
+  // Buff
+  const bCost = buffCost(G.buffLevel);
+  document.getElementById('buff-cost').textContent = fmt(bCost);
+  document.getElementById('buff-level-badge').textContent = G.buffLevel;
+  document.getElementById('buff-level-badge').className = 'uc-level' + (G.buffLevel >= G.buffMax ? ' maxed' : '');
+  document.getElementById('buff-bar').style.width = (G.buffLevel / G.buffMax * 100) + '%';
+  document.getElementById('buff-card').className = 'upgrade-card' + (G.clicks < bCost || G.buffLevel >= G.buffMax ? ' locked' : '');
+
+  // Factories
+  [1,2,3].forEach(n => {
+    const bases = {1: G.f1Base, 2: G.f2Base, 3: G.f3Base};
+    const levels = {1: G.f1Level, 2: G.f2Level, 3: G.f3Level};
+    const lv = levels[n];
+    const cost = factoryCost(bases[n], lv);
+    document.getElementById(`f${n}-cost`).textContent = fmt(cost);
+    document.getElementById(`f${n}-level-badge`).textContent = lv;
+    document.getElementById(`f${n}-level-badge`).className = 'uc-level' + (lv >= G.fMax ? ' maxed' : '');
+    document.getElementById(`f${n}-bar`).style.width = (lv / G.fMax * 100) + '%';
+    document.getElementById(`f${n}-card`).className = 'upgrade-card' + (G.clicks < cost || lv >= G.fMax ? ' locked' : '');
+  });
+
+  // Super factory
+  const sfc = sfCost();
+  document.getElementById('sf-cost').textContent = G.sfBought ? fmt(sfc) + ' кліків' : '1,300 кліків';
+  document.getElementById('sf-level-badge').textContent = G.sfLevel;
+  document.getElementById('sf-level-badge').className = 'uc-level' + (G.sfLevel >= G.sfMax ? ' maxed' : '');
+  document.getElementById('sf-bar').style.width = (G.sfLevel / G.sfMax * 100) + '%';
+  document.getElementById('sf-card').className = 'upgrade-card' + (G.clicks < sfc || G.sfLevel >= G.sfMax ? ' locked' : '');
+
+  // Crystal boost cost
+  document.getElementById('cps-boost-cost').textContent = (25 + G.cpsBoostLevel * 15) + ' 💎';
+
+  // Skin on button
+  const btn = document.getElementById('main-btn');
+  btn.className = '';
+  const skin = getCurrentSkin();
+  if (skin.cssClass) btn.classList.add(skin.cssClass);
+
+  renderSkins();
+}
+
+// ============ INIT ============
+setInterval(gameLoop, 50);
+updateUI();
+</script>
+</body>
+</html>
